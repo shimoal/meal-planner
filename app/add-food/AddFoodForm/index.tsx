@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
 
-import Button from '@/components/Button'
-import Input from '@/components/formElements/Input'
+import Button from '@/(components)/Button'
+import Input from '@/(components)/formElements/Input'
 
 type Props = {
   addFoodToDB: (name: string, calorieCount: number) => Promise<void>
