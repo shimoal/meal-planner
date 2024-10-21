@@ -3,17 +3,24 @@ import { useState } from 'react'
 
 import Button from '@/(components)/Button'
 import Input from '@/(components)/formElements/Input'
+import { useRouter } from 'next/navigation'
+import { Food } from '@/db/types'
 
 type Props = {
-  addFoodToDB: (name: string, calorieCount: number) => Promise<void>
+  addFoodToDB: (name: string, calorieCount: number) => Promise<Food[]>
 }
 
 const AddFoodForm = ({ addFoodToDB }: Props) => {
   const [name, setName] = useState<string>()
   const [calorieCount, setCalorieCount] = useState<number>()
 
+  const router = useRouter()
+
   const handleSubmit = async () => {
-    await addFoodToDB(name || '', calorieCount || 0)
+    const response = await addFoodToDB(name || '', calorieCount || 0)
+    if (response.length > 0) {
+      router.push('/add-food/success')
+    }
   }
 
   return (
