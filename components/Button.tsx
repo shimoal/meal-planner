@@ -9,10 +9,11 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 const Button = ({ color, children }: Props) => {
   return (
     <button
-      className={clsx('py-2 px-2 rounded', {
-        'bg-indigo-500 hover:bg-indigo-600': !color || color === 'primary',
-        'bg-red-500 hover:bg-red-600': color === 'warning',
-      })}
+      className={clsx(
+        'py-2 px-2 rounded',
+        color === 'warning' && 'bg-red-300 hover:bg-red-500',
+        (!color || color === 'primary') && 'bg-indigo-300 hover:bg-indigo-500'
+      )}
     >
       {children}
     </button>

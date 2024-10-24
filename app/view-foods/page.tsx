@@ -1,4 +1,4 @@
-import PageContainer from '@/(components)/PageContainer'
+import PageContainer from '@/components/PageContainer'
 import { getFoods } from '../(server)/foods'
 import FoodList from './FoodList'
 

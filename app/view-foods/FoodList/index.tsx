@@ -3,7 +3,7 @@
 import { Food } from '@/db/types'
 import FoodCard from '../FoodCard'
 import { useState } from 'react'
-import Button from '@/(components)/Button'
+import Button from '@/components/Button'
 
 type Props = {
   foods: Food[]
@@ -39,6 +39,7 @@ const FoodList = ({ foods }: Props) => {
       ))}
       {selectedFoods.length > 0 && (
         <>
+          {/* <button className="bg-red-500 hover:bg-red-800">Delete</button> */}
           <Button color="warning">Delete {selectedFoods.length} food(s)</Button>
         </>
       )}
