@@ -7,40 +7,52 @@ import Button from '@/components/Button'
 
 type Props = {
   foods: Food[]
+  handleDeleteFoods: (foodIds: number[]) => Promise<void>
 }
-const FoodList = ({ foods }: Props) => {
-  const [selectedFoods, setSelectedFoods] = useState<number[]>([])
+const FoodList = ({ foods, handleDeleteFoods }: Props) => {
+  const [selectedFoodIds, setSelectedFoodIds] = useState<number[]>([])
+  const [foodsAvailable, setFoodsAvailable] = useState(foods)
 
   const toggleSelectFood = (id: number) => {
-    const indexOfId = selectedFoods.indexOf(id)
+    const indexOfId = selectedFoodIds.indexOf(id)
     if (indexOfId >= 0) {
-      setSelectedFoods((selectedFoods) => {
-        const newSelectedFoods = [...selectedFoods]
+      setSelectedFoodIds((selectedFoodIds) => {
+        const newSelectedFoods = [...selectedFoodIds]
         newSelectedFoods.splice(indexOfId, 1)
         return newSelectedFoods
       })
     } else {
-      setSelectedFoods((selectedFoods) => [...selectedFoods, id])
+      setSelectedFoodIds((selectedFoodIds) => [...selectedFoodIds, id])
     }
+  }
+
+  const deleteSelectedFoods = async () => {
+    await handleDeleteFoods(selectedFoodIds)
+    // reset food list and selected foods after deleting
+    setFoodsAvailable((foods) =>
+      foods.filter((food) => !selectedFoodIds.includes(food.id))
+    )
+    setSelectedFoodIds([])
   }
 
   return (
     <>
       <h2>Existing Foods:</h2>
-      {foods.map((food) => (
+      {foodsAvailable.map((food) => (
         <FoodCard
           id={food.id}
-          isSelected={selectedFoods.includes(food.id)}
+          isSelected={selectedFoodIds.includes(food.id)}
           name={food.name}
           calories={food.calorie_count}
           key={`food-${food.id}`}
           onClick={toggleSelectFood}
         />
       ))}
-      {selectedFoods.length > 0 && (
+      {selectedFoodIds.length > 0 && (
         <>
-          {/* <button className="bg-red-500 hover:bg-red-800">Delete</button> */}
-          <Button color="warning">Delete {selectedFoods.length} food(s)</Button>
+          <Button onClick={deleteSelectedFoods} color="warning">
+            Delete {selectedFoodIds.length} food(s)
+          </Button>
         </>
       )}
     </>

@@ -6,9 +6,10 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode
 }
 
-const Button = ({ color, children }: Props) => {
+const Button = ({ color, children, ...otherProps }: Props) => {
   return (
     <button
+      {...otherProps}
       className={clsx(
         'py-2 px-2 rounded',
         color === 'warning' && 'bg-red-300 hover:bg-red-500',

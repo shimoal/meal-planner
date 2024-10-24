@@ -24,3 +24,11 @@ export async function addFood({
 
   return result
 }
+
+export async function deleteFoods(foodIds: number[]) {
+  const query = db.deleteFrom('foods')
+
+  const result = await query.where('id', 'in', foodIds).execute()
+
+  return result
+}
