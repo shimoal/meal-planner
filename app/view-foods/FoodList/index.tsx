@@ -38,16 +38,18 @@ const FoodList = ({ foods, handleDeleteFoods }: Props) => {
   return (
     <>
       <h2>Existing Foods:</h2>
-      {foodsAvailable.map((food) => (
-        <FoodCard
-          id={food.id}
-          isSelected={selectedFoodIds.includes(food.id)}
-          name={food.name}
-          calories={food.calorie_count}
-          key={`food-${food.id}`}
-          onClick={toggleSelectFood}
-        />
-      ))}
+      <div className="grid grid-cols-3 gap-4 p-4">
+        {foodsAvailable.map((food) => (
+          <FoodCard
+            id={food.id}
+            isSelected={selectedFoodIds.includes(food.id)}
+            name={food.name}
+            calories={food.calorie_count}
+            key={`food-${food.id}`}
+            onClick={toggleSelectFood}
+          />
+        ))}
+      </div>
       {selectedFoodIds.length > 0 && (
         <>
           <Button onClick={deleteSelectedFoods} color="warning">
