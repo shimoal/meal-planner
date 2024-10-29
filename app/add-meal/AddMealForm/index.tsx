@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Button from '@/components/Button'
 import Input from '@/components/formElements/Input'
 import { Meal } from '@/db/types'
+import Select from '@/components/formElements/Select/Select'
 
 type Props = {
   addMeal: (meal: Meal) => Promise<Meal[]>
@@ -39,13 +40,18 @@ const AddMealForm = ({ addMeal }: Props) => {
       <div>
         <label>Meal Type</label>
         <br />
-        <Input
+        <Select
           id="meal-type"
           name="meal-type"
-          type="text"
-          value={meal.type}
           onChange={(e) => handleFormUpdate('type', e.target.value)}
-        />
+          value={meal.type}
+          options={[
+            { label: 'Breakfast', value: 'breakfast' },
+            { label: 'Lunch', value: 'lunch' },
+            { label: 'Dinner', value: 'dinner' },
+            { label: 'Snack', value: 'snack' },
+          ]}
+        ></Select>
       </div>
       <Button type="submit" onSubmit={handleSubmit}>
         Add meal
