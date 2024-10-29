@@ -26,7 +26,9 @@ const Select = ({ id, name, options, value, onChange }: Props) => {
       onChange={onChange}
     >
       {options?.map((option) => (
-        <option>{option.label}</option>
+        <option value={option.value} key={`${id}-option-${option.value}`}>
+          {option.label}
+        </option>
       ))}
     </select>
   )
