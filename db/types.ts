@@ -19,7 +19,7 @@ export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
 export interface MealsTable {
   id: Generated<number>
   name: string
-  type: MealType
+  meal_type: MealType
   created_at: ColumnType<Date, string | undefined, never>
   updated_at: ColumnType<Date, string | undefined>
 }

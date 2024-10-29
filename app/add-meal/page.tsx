@@ -1,12 +1,18 @@
 import PageContainer from '@/components/PageContainer'
-import { Meal } from '@/db/types'
+import { MealType } from '@/db/types'
 import AddMealForm from './AddMealForm'
+import { addMeal } from '../(server)/meals'
 
 const Page = async () => {
-  const addMealToDB = async (meal: Meal) => {
+  const addMealToDB = async ({
+    name,
+    mealType,
+  }: {
+    name: string
+    mealType: MealType
+  }) => {
     'use server'
-    // add meal here
-    return []
+    return await addMeal({ name, mealType })
   }
 
   return (

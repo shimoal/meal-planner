@@ -3,21 +3,27 @@ import { useState } from 'react'
 
 import Button from '@/components/Button'
 import Input from '@/components/formElements/Input'
-import { Meal } from '@/db/types'
+import { Meal, MealType } from '@/db/types'
 import Select from '@/components/formElements/Select/Select'
+import { useRouter } from 'next/navigation'
 
 type Props = {
-  addMeal: (meal: Meal) => Promise<Meal[]>
+  addMeal: (meal: { name: string; mealType: MealType }) => Promise<Meal[]>
 }
 
 const AddMealForm = ({ addMeal }: Props) => {
-  const [meal, setMeal] = useState<Partial<Meal>>({
+  const [meal, setMeal] = useState<{ name: string; mealType: MealType }>({
     name: '',
-    type: 'breakfast',
+    mealType: 'breakfast',
   })
 
+  const router = useRouter()
+
   const handleSubmit = async () => {
-    await addMeal(meal as Meal)
+    const response = await addMeal(meal)
+    if (response.length > 0) {
+      router.push(`/edit-meal/${response[0].id}`)
+    }
   }
 
   const handleFormUpdate = (formField: string, value: string) => {
@@ -43,8 +49,8 @@ const AddMealForm = ({ addMeal }: Props) => {
         <Select
           id="meal-type"
           name="meal-type"
-          onChange={(e) => handleFormUpdate('type', e.target.value)}
-          value={meal.type}
+          onChange={(e) => handleFormUpdate('mealType', e.target.value)}
+          value={meal.mealType}
           options={[
             { label: 'Breakfast', value: 'breakfast' },
             { label: 'Lunch', value: 'lunch' },
