@@ -8,6 +8,17 @@ export async function getMeals(): Promise<Meal[]> {
   return result
 }
 
+export async function getMeal(mealId: number): Promise<Meal> {
+  const query = db.selectFrom('meals')
+
+  const result = await query
+    .where('id', '=', mealId)
+    .selectAll()
+    .executeTakeFirstOrThrow()
+
+  return result
+}
+
 export async function addMeal({
   name,
   mealType,
