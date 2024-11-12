@@ -19,7 +19,10 @@ const AddIngredients = ({ foods }: Props) => {
     <div>
       <h2>Ingredients to add:</h2>
       {ingredientsToAdd.map((ingredient) => (
-        <div>{ingredient.food_name}</div>
+        <div key={ingredient.food_id}>
+          {ingredient.food_name} - {ingredient.quantity}{' '}
+          {ingredient.quantity_label}
+        </div>
       ))}
       <AddIngredient
         foods={foods}

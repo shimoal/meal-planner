@@ -30,6 +30,13 @@ const AddIngredient = ({ foods, handleAddingIngredient }: Props) => {
     }
   }
 
+  const updateIngredient = (fieldName: string, value: string | number) => {
+    setIngredientToAdd((i) => ({
+      ...i,
+      [fieldName]: value,
+    }))
+  }
+
   return (
     <div>
       <form action={handleSubmit}>
@@ -37,15 +44,14 @@ const AddIngredient = ({ foods, handleAddingIngredient }: Props) => {
         <Select
           id="food"
           name="food"
-          onChange={(e) =>
-            setIngredientToAdd((i) => ({
-              ...i,
-              food_id: Number(e.target.value),
-              food_name: foods.find(
-                (food) => food.id === Number(e.target.value)
-              )?.name,
-            }))
-          }
+          onChange={(e) => {
+            updateIngredient('food_id', Number(e.target.value))
+            updateIngredient(
+              'food_name',
+              foods.find((food) => food.id === Number(e.target.value))?.name ||
+                ''
+            )
+          }}
           value={ingredientToAdd?.food_id}
           options={foods.map((food) => ({
             label: food.name,
@@ -54,8 +60,16 @@ const AddIngredient = ({ foods, handleAddingIngredient }: Props) => {
         />
 
         <label>Quantity</label>
-        <Input id="ingredient-qty" type="number" />
-        <Input id="ingredient-qty-label" type="text" />
+        <Input
+          id="ingredient-qty"
+          type="number"
+          onChange={(e) => updateIngredient('quantity', Number(e.target.value))}
+        />
+        <Input
+          id="ingredient-qty-label"
+          type="text"
+          onChange={(e) => updateIngredient('quantity_label', e.target.value)}
+        />
         <Button type="submit" onSubmit={handleSubmit}>
           Add Ingredient to Meal
         </Button>
