@@ -3,26 +3,21 @@
 import Button from '@/components/Button'
 import Input from '@/components/formElements/Input'
 import Select from '@/components/formElements/Select/Select'
-import { Food } from '@/db/types'
+import { Food, NewIngredient } from '@/db/types'
 import { useState } from 'react'
 
 type Props = {
   foods: Food[]
-  handleAddingIngredient: (ingredient: Ingredient) => void
+  mealId: number
+  handleAddingIngredient: (ingredient: NewIngredient) => void
 }
 
-export type Ingredient = {
-  food_id?: number
-  food_name?: string
-  quantity?: number
-  quantity_in_grams?: number
-  quantity_label?: string
-}
-
-const AddIngredient = ({ foods, handleAddingIngredient }: Props) => {
-  const [ingredientToAdd, setIngredientToAdd] = useState<Ingredient | null>(
-    null
-  )
+const AddIngredient = ({ foods, mealId, handleAddingIngredient }: Props) => {
+  const firstFoodId = foods[0].id
+  const [ingredientToAdd, setIngredientToAdd] = useState<NewIngredient>({
+    food_id: firstFoodId,
+    meal_id: mealId,
+  })
 
   const handleSubmit = () => {
     if (ingredientToAdd) {
@@ -45,12 +40,8 @@ const AddIngredient = ({ foods, handleAddingIngredient }: Props) => {
           id="food"
           name="food"
           onChange={(e) => {
-            updateIngredient('food_id', Number(e.target.value))
-            updateIngredient(
-              'food_name',
-              foods.find((food) => food.id === Number(e.target.value))?.name ||
-                ''
-            )
+            const foodId = Number(e.target.value)
+            updateIngredient('food_id', foodId)
           }}
           value={ingredientToAdd?.food_id}
           options={foods.map((food) => ({
@@ -63,12 +54,14 @@ const AddIngredient = ({ foods, handleAddingIngredient }: Props) => {
         <Input
           id="ingredient-qty"
           type="number"
-          onChange={(e) => updateIngredient('quantity', Number(e.target.value))}
+          onChange={(e) =>
+            updateIngredient('label_qty', Number(e.target.value))
+          }
         />
         <Input
           id="ingredient-qty-label"
           type="text"
-          onChange={(e) => updateIngredient('quantity_label', e.target.value)}
+          onChange={(e) => updateIngredient('label', e.target.value)}
         />
         <Button type="submit" onSubmit={handleSubmit}>
           Add Ingredient to Meal

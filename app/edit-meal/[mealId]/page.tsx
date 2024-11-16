@@ -2,10 +2,17 @@ import { getMeal } from '@/app/(server)/meals'
 import PageContainer from '@/components/PageContainer'
 import AddIngredients from './AddIngredients/AddIngredients'
 import { getFoods } from '@/app/(server)/foods'
+import { NewIngredient } from '@/db/types'
+import { addIngredients } from '@/app/(server)/ingredients'
 
 const Page = async ({ params }: { params: { mealId: string } }) => {
   const meal = await getMeal(Number(params.mealId))
   const foods = await getFoods()
+
+  const updateIngredients = async (ingredients: NewIngredient[]) => {
+    'use server'
+    return await addIngredients(ingredients)
+  }
 
   return (
     <PageContainer>
@@ -16,7 +23,11 @@ const Page = async ({ params }: { params: { mealId: string } }) => {
         <p>Type: {meal.meal_type}</p>
         <p>Ingredients: {/*TODO: Add ingredients here*/}</p>
       </div>
-      <AddIngredients foods={foods} />
+      <AddIngredients
+        foods={foods}
+        mealId={meal.id}
+        handleSaveIngredients={updateIngredients}
+      />
     </PageContainer>
   )
 }

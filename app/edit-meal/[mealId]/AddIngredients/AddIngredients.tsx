@@ -1,18 +1,25 @@
 'use client'
 
-import { Food } from '@/db/types'
+import { Food, Ingredient, NewIngredient } from '@/db/types'
 import { useState } from 'react'
-import AddIngredient, { Ingredient } from './AddIngredient'
+import AddIngredient from './AddIngredient'
+import Button from '@/components/Button'
 
 type Props = {
   foods: Food[]
+  mealId: number
+  handleSaveIngredients: (ingredients: NewIngredient[]) => Promise<Ingredient[]>
 }
 
-const AddIngredients = ({ foods }: Props) => {
-  const [ingredientsToAdd, setIngredientsToAdd] = useState<Ingredient[]>([])
+const AddIngredients = ({ foods, mealId, handleSaveIngredients }: Props) => {
+  const [ingredientsToAdd, setIngredientsToAdd] = useState<NewIngredient[]>([])
 
-  const handleAddingIngredient = (ingredient: Ingredient) => {
+  const handleAddingIngredient = (ingredient: NewIngredient) => {
     setIngredientsToAdd((i) => [...i, ingredient])
+  }
+
+  const getFoodNameFromId = (foodId: number) => {
+    return foods.find((food) => food.id === foodId)?.name || ''
   }
 
   return (
@@ -20,14 +27,18 @@ const AddIngredients = ({ foods }: Props) => {
       <h2>Ingredients to add:</h2>
       {ingredientsToAdd.map((ingredient) => (
         <div key={ingredient.food_id}>
-          {ingredient.food_name} - {ingredient.quantity}{' '}
-          {ingredient.quantity_label}
+          {getFoodNameFromId(ingredient.food_id)} - {ingredient.label_qty}{' '}
+          {ingredient.label}
         </div>
       ))}
       <AddIngredient
         foods={foods}
+        mealId={mealId}
         handleAddingIngredient={handleAddingIngredient}
       />
+      <Button onClick={() => handleSaveIngredients(ingredientsToAdd)}>
+        Save Ingredients to Meal
+      </Button>
     </div>
   )
 }
