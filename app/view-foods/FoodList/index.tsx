@@ -3,15 +3,17 @@
 import { useState } from 'react'
 import Button from '@/components/Button'
 import clsx from 'clsx'
+import FoodCard from '../FoodCard'
+import { Food } from '@/db/types'
 
 type Props = {
   handleDeleteItemIds: (ids: number[]) => Promise<void>
-  items: { id: number; content: React.ReactNode }[]
+  foods: Food[]
 }
 
-const SelectAndDeleteList = ({ handleDeleteItemIds, items }: Props) => {
+const FoodList = ({ handleDeleteItemIds, foods }: Props) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
-  const [itemsAvailable, setItemsAvailable] = useState(items)
+  const [itemsAvailable, setItemsAvailable] = useState(foods)
 
   const toggleSelectItem = (id: number) => {
     const indexOfId = selectedIds.indexOf(id)
@@ -37,28 +39,26 @@ const SelectAndDeleteList = ({ handleDeleteItemIds, items }: Props) => {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-4 p-4">
-        {itemsAvailable.map(({ id, content }) => (
-          <div
+      <div className="grid gap-4 p-4 w-[80%]">
+        {selectedIds.length > 0 && (
+          <>
+            <Button onClick={deleteSelectedItems} color="warning">
+              Delete {selectedIds.length} items(s)
+            </Button>
+          </>
+        )}
+        {itemsAvailable.map(({ id, name, calorie_count }) => (
+          <FoodCard
             key={id}
-            className={clsx('shadow hover:cursor-pointer p-4', {
-              'bg-red-100': selectedIds.includes(id),
-            })}
             onClick={() => toggleSelectItem(id)}
-          >
-            {content}
-          </div>
+            selected={selectedIds.includes(id)}
+            name={name}
+            calories={calorie_count}
+          />
         ))}
       </div>
-      {selectedIds.length > 0 && (
-        <>
-          <Button onClick={deleteSelectedItems} color="warning">
-            Delete {selectedIds.length} items(s)
-          </Button>
-        </>
-      )}
     </>
   )
 }
 
-export default SelectAndDeleteList
+export default FoodList
