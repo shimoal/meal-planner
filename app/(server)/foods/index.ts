@@ -4,7 +4,7 @@ import { Food } from '@/db/types'
 export async function getFoods(): Promise<Food[]> {
   const query = db.selectFrom('foods')
 
-  const result = await query.selectAll().execute()
+  const result = await query.selectAll().limit(10).execute()
   return result
 }
 

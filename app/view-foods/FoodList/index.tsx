@@ -1,19 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '@/components/Button'
-import clsx from 'clsx'
 import FoodCard from '../FoodCard'
 import { Food } from '@/db/types'
+import useSWR, { Fetcher } from 'swr'
 
 type Props = {
   handleDeleteItemIds: (ids: number[]) => Promise<void>
   foods: Food[]
 }
 
-const FoodList = ({ handleDeleteItemIds, foods }: Props) => {
+const FoodList = ({ handleDeleteItemIds }: Props) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
-  const [itemsAvailable, setItemsAvailable] = useState(foods)
+  const [itemsAvailable, setItemsAvailable] = useState<Food[]>([])
+
+  const fetcher: Fetcher<Food[], string> = (route) =>
+    fetch(route).then((res) => res.json())
+  const { data, isLoading } = useSWR('/api/foods', fetcher)
+
+  useEffect(() => {
+    if (data) {
+      setItemsAvailable(data)
+    }
+  }, [data])
 
   const toggleSelectItem = (id: number) => {
     const indexOfId = selectedIds.indexOf(id)
@@ -35,6 +45,10 @@ const FoodList = ({ handleDeleteItemIds, foods }: Props) => {
       items.filter((item) => !selectedIds.includes(item.id))
     )
     setSelectedIds([])
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
   }
 
   return (
