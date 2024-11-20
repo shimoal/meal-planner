@@ -6,9 +6,7 @@ import Input from '@/components/formElements/Input'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addFood } from './addFood'
 
-type Props = {}
-
-const AddFoodForm = ({}: Props) => {
+const AddFoodForm = () => {
   const [name, setName] = useState<string>('')
   const [calorieCount, setCalorieCount] = useState<number>(0)
 
