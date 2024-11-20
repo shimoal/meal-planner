@@ -10,15 +10,15 @@ export async function getFoods(): Promise<Food[]> {
 
 export async function addFood({
   name,
-  calorieCount,
+  calorie_count,
 }: {
   name: string
-  calorieCount: number
+  calorie_count: number
 }) {
   const query = db.insertInto('foods')
 
   const result = await query
-    .values({ name, calorie_count: calorieCount })
+    .values({ name, calorie_count })
     .returningAll()
     .execute()
 

@@ -3,24 +3,27 @@ import { useState } from 'react'
 
 import Button from '@/components/Button'
 import Input from '@/components/formElements/Input'
-import { useRouter } from 'next/navigation'
-import { Food } from '@/db/types'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { addFood } from './addFood'
 
-type Props = {
-  addFoodToDB: (name: string, calorieCount: number) => Promise<Food[]>
-}
+type Props = {}
 
-const AddFoodForm = ({ addFoodToDB }: Props) => {
-  const [name, setName] = useState<string>()
-  const [calorieCount, setCalorieCount] = useState<number>()
+const AddFoodForm = ({}: Props) => {
+  const [name, setName] = useState<string>('')
+  const [calorieCount, setCalorieCount] = useState<number>(0)
 
-  const router = useRouter()
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: addFood,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['foods'] })
+      setName('')
+      setCalorieCount(0)
+    },
+  })
 
   const handleSubmit = async () => {
-    const response = await addFoodToDB(name || '', calorieCount || 0)
-    if (response.length > 0) {
-      router.push('/add-food/success')
-    }
+    mutation.mutate({ name: name, calorie_count: calorieCount })
   }
 
   return (
