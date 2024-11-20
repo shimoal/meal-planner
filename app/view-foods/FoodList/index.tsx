@@ -7,9 +7,7 @@ import { Food } from '@/db/types'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { deleteFoodItem, getFoodList } from './getFoodList'
 
-type Props = {}
-
-const FoodList = ({}: Props) => {
+const FoodList = () => {
   const [selectedId, setSelectedFoodId] = useState<number | null>(null)
 
   const { data }: { data?: Food[] } = useQuery({
