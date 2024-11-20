@@ -39,14 +39,6 @@ export default function RootLayout({
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased h-[100vh] bg-slate-100 text-neutral-900`}
           >
-            <header>
-              <SignedOut>
-                <SignInButton />
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
-            </header>
             <Navbar />
             {children}
           </body>
