@@ -7,7 +7,7 @@ export async function GET() {
   return NextResponse.json(response)
 }
 
-export async function POST(request: NextRequest, re: NextResponse) {
+export async function POST(request: NextRequest) {
   const { userId } = getAuth(request)
 
   if (!userId) {
