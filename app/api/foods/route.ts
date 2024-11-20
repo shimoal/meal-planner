@@ -1,4 +1,5 @@
 import { addFood, deleteFood, getFoods } from '@/app/(server)/foods'
+import { getAuth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
@@ -6,10 +7,16 @@ export async function GET() {
   return NextResponse.json(response)
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, re: NextResponse) {
+  const { userId } = getAuth(request)
+
+  if (!userId) {
+    return new NextResponse('Unauthorized', { status: 401 })
+  }
+
   const { name, calorie_count } = await request.json()
   const response = await addFood({ name, calorie_count })
-  return NextResponse.json('post complete')
+  return NextResponse.json(response)
 }
 
 export async function DELETE(request: NextRequest) {
