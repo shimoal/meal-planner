@@ -5,7 +5,6 @@ import { useInView } from 'react-intersection-observer'
 
 import Button from '@/components/Button'
 import FoodCard from '../FoodCard'
-import { PaginatedFood } from '@/db/types'
 import {
   useMutation,
   useQueryClient,
@@ -22,8 +21,7 @@ const FoodList = () => {
   const { data, isFetching, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery({
       queryKey: ['foods'],
-      queryFn: async ({ pageParam }): Promise<PaginatedFood> =>
-        await getPaginatedFoodList(pageParam),
+      queryFn: getPaginatedFoodList,
       initialPageParam: 0,
       getPreviousPageParam: (firstPage) => firstPage.previousId,
       getNextPageParam: (lastpage) => lastpage.nextId,

@@ -1,4 +1,5 @@
-import { Food, PaginatedFood } from '@/db/types'
+import { Food } from '@/db/types'
+import { PaginatedFood } from '@/types/paginatedTypes'
 
 export async function getFoodList(): Promise<Food[]> {
   const response = await fetch('/api/foods')
@@ -10,9 +11,11 @@ export async function getFoodList(): Promise<Food[]> {
   return response.json()
 }
 
-export async function getPaginatedFoodList(
+export async function getPaginatedFoodList({
+  pageParam,
+}: {
   pageParam: number
-): Promise<PaginatedFood> {
+}): Promise<PaginatedFood> {
   const response = await fetch(`/api/foods?cursor=${pageParam}`)
 
   if (!response.ok) {
