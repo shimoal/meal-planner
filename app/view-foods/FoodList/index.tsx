@@ -10,9 +10,9 @@ import { deleteFoodItem, getFoodList } from './getFoodList'
 type Props = {}
 
 const FoodList = ({}: Props) => {
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [selectedId, setSelectedFoodId] = useState<number | null>(null)
 
-  const { data }: { data: Food[] } = useQuery({
+  const { data }: { data?: Food[] } = useQuery({
     queryKey: ['foods'],
     queryFn: getFoodList,
   })
@@ -25,31 +25,26 @@ const FoodList = ({}: Props) => {
   })
 
   const toggleSelectItem = (id: number) => {
-    const indexOfId = selectedIds.indexOf(id)
-    if (indexOfId >= 0) {
-      setSelectedIds((selectedIds) => {
-        const newSelectedIds = [...selectedIds]
-        newSelectedIds.splice(indexOfId, 1)
-        return newSelectedIds
-      })
-    } else {
-      setSelectedIds((selectedIds) => [...selectedIds, id])
-    }
+    setSelectedFoodId((selectedId) => {
+      if (id === selectedId) return null
+      return id
+    })
   }
 
   const deleteSelectedItems = async () => {
-    await mutation.mutate(selectedIds[0])
-
-    setSelectedIds([])
+    if (selectedId) {
+      mutation.mutate(selectedId)
+    }
+    setSelectedFoodId(null)
   }
 
   return (
     <>
       <div className="grid gap-4 p-4 w-[80%]">
-        {selectedIds.length > 0 && (
+        {selectedId && (
           <>
             <Button onClick={deleteSelectedItems} color="warning">
-              Delete {selectedIds.length} items(s)
+              Delete
             </Button>
           </>
         )}
@@ -57,7 +52,7 @@ const FoodList = ({}: Props) => {
           <FoodCard
             key={id}
             onClick={() => toggleSelectItem(id)}
-            selected={selectedIds.includes(id)}
+            selected={selectedId === id}
             name={name}
             calories={calorie_count}
           />

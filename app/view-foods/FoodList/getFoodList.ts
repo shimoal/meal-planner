@@ -10,7 +10,7 @@ export async function getFoodList(): Promise<Food[]> {
   return response.json()
 }
 
-export async function deleteFoodItem(foodId: string): Promise<void> {
+export async function deleteFoodItem(foodId: number): Promise<void> {
   const response = await fetch(`/api/foods?id=${foodId}`, { method: 'DELETE' })
 
   if (!response.ok) {
