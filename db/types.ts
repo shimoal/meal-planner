@@ -11,7 +11,7 @@ export interface FoodsTable {
   name: string
   calorie_count: number
   created_at: ColumnType<Date, string | undefined, never>
-  updated_at: Generated<Date>
+  updated_at: ColumnType<Date, string | undefined>
 }
 
 export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
