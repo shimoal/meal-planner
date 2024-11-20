@@ -2,8 +2,14 @@ import { addFood, deleteFood, getFoods } from '@/app/(server)/foods'
 import { getAuth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET() {
-  const response = await getFoods()
+export async function GET(request: NextRequest) {
+  const lastUpdatedAt = request.nextUrl.searchParams.get('lastUpdatedAt')
+  let lastSeen
+  if (lastUpdatedAt) {
+    lastSeen = new Date(lastUpdatedAt)
+  }
+
+  const response = await getFoods({ lastSeen })
   return NextResponse.json(response)
 }
 

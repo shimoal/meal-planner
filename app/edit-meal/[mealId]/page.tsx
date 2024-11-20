@@ -7,7 +7,7 @@ import { addIngredients } from '@/app/(server)/ingredients'
 
 const Page = async ({ params }: { params: { mealId: string } }) => {
   const meal = await getMeal(Number(params.mealId))
-  const foods = await getFoods()
+  const foods = await getFoods({})
 
   const updateIngredients = async (ingredients: NewIngredient[]) => {
     'use server'
