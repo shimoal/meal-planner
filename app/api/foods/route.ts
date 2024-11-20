@@ -2,15 +2,17 @@ import { addFood, deleteFood, getFoods } from '@/app/(server)/foods'
 import { getAuth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
-  const lastUpdatedAt = request.nextUrl.searchParams.get('lastUpdatedAt')
-  let lastSeen
-  if (lastUpdatedAt) {
-    lastSeen = new Date(lastUpdatedAt)
-  }
+const PAGE_SIZE = 10
 
-  const response = await getFoods({ lastSeen })
-  return NextResponse.json(response)
+export async function GET(request: NextRequest) {
+  const cursor = Number(request.nextUrl.searchParams.get('cursor'))
+
+  const data = await getFoods({ cursor, pageSize: PAGE_SIZE })
+
+  const nextId = cursor + PAGE_SIZE
+  const previousId = cursor - PAGE_SIZE > 0 ? cursor - PAGE_SIZE : 0
+
+  return NextResponse.json({ data, nextId, previousId })
 }
 
 export async function POST(request: NextRequest) {

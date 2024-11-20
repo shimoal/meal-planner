@@ -40,6 +40,7 @@ export interface Database {
 }
 
 export type Food = Selectable<FoodsTable>
+export type PaginatedFood = { data: Food[]; previousId: number; nextId: number }
 export type NewFood = Insertable<FoodsTable>
 export type UpdateFood = Updateable<FoodsTable>
 

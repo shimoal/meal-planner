@@ -1,20 +1,40 @@
 'use client'
 
-import { useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+
 import Button from '@/components/Button'
 import FoodCard from '../FoodCard'
-import { Food } from '@/db/types'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { deleteFoodItem, getFoodList } from './getFoodList'
+import { PaginatedFood } from '@/db/types'
+import {
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+} from '@tanstack/react-query'
+import { deleteFoodItem, getPaginatedFoodList } from './getFoodList'
 
 const FoodList = () => {
   const [selectedId, setSelectedFoodId] = useState<number | null>(null)
 
-  const { data }: { data?: Food[] } = useQuery({
-    queryKey: ['foods'],
-    queryFn: getFoodList,
-  })
+  const { ref, inView } = useInView()
   const queryClient = useQueryClient()
+
+  const { data, isFetching, isFetchingNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      queryKey: ['foods'],
+      queryFn: async ({ pageParam }): Promise<PaginatedFood> =>
+        await getPaginatedFoodList(pageParam),
+      initialPageParam: 0,
+      getPreviousPageParam: (firstPage) => firstPage.previousId,
+      getNextPageParam: (lastpage) => lastpage.nextId,
+    })
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage()
+    }
+  }, [fetchNextPage, inView])
+
   const mutation = useMutation({
     mutationFn: deleteFoodItem,
     onSuccess: () => {
@@ -46,16 +66,22 @@ const FoodList = () => {
             </Button>
           </>
         )}
-        {data?.map(({ id, name, calorie_count }) => (
-          <FoodCard
-            key={id}
-            onClick={() => toggleSelectItem(id)}
-            selected={selectedId === id}
-            name={name}
-            calories={calorie_count}
-          />
+        {data?.pages.map((page) => (
+          <Fragment key={page.nextId}>
+            {page.data.map(({ id, name, calorie_count }) => (
+              <FoodCard
+                key={id}
+                onClick={() => toggleSelectItem(id)}
+                selected={selectedId === id}
+                name={name}
+                calories={calorie_count}
+              />
+            ))}
+          </Fragment>
         ))}
       </div>
+      <div ref={ref}></div>
+      <div>{isFetching && !isFetchingNextPage ? 'Loading...' : null}</div>
     </>
   )
 }

@@ -3,22 +3,21 @@ import { Food } from '@/db/types'
 
 type GetFoodsParams = {
   pageSize?: number
-  lastSeen?: Date
+  cursor?: number
 }
 export async function getFoods({
   pageSize,
-  lastSeen,
+  cursor,
 }: GetFoodsParams): Promise<Food[]> {
   let query = db.selectFrom('foods')
-
   query = query.orderBy('updated_at desc')
 
   if (pageSize) {
     query = query.limit(pageSize)
   }
 
-  if (lastSeen) {
-    query = query.where('updated_at', '>', lastSeen)
+  if (cursor) {
+    query = query.offset(cursor)
   }
 
   const result = await query.selectAll().execute()
