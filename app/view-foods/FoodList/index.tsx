@@ -4,22 +4,25 @@ import { useState } from 'react'
 import Button from '@/components/Button'
 import FoodCard from '../FoodCard'
 import { Food } from '@/db/types'
-import { useQuery } from '@tanstack/react-query'
-import { getFoodList } from './getFoodList'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { deleteFoodItem, getFoodList } from './getFoodList'
 
-type Props = {
-  handleDeleteItemIds: (ids: number[]) => Promise<void>
-}
+type Props = {}
 
-const FoodList = ({ handleDeleteItemIds }: Props) => {
+const FoodList = ({}: Props) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
-  const [itemsAvailable, setItemsAvailable] = useState([])
 
-  const { data, status, error }: { data: Food[]; status: string; error: any } =
-    useQuery({
-      queryKey: ['foods'],
-      queryFn: getFoodList,
-    })
+  const { data }: { data: Food[] } = useQuery({
+    queryKey: ['foods'],
+    queryFn: getFoodList,
+  })
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: deleteFoodItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['foods'] })
+    },
+  })
 
   const toggleSelectItem = (id: number) => {
     const indexOfId = selectedIds.indexOf(id)
@@ -35,11 +38,8 @@ const FoodList = ({ handleDeleteItemIds }: Props) => {
   }
 
   const deleteSelectedItems = async () => {
-    await handleDeleteItemIds(selectedIds)
-    // reset item list and selected items after deleting
-    setItemsAvailable((items) =>
-      items.filter((item) => !selectedIds.includes(item.id))
-    )
+    await mutation.mutate(selectedIds[0])
+
     setSelectedIds([])
   }
 
