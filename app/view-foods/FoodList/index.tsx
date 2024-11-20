@@ -2,18 +2,24 @@
 
 import { useState } from 'react'
 import Button from '@/components/Button'
-import clsx from 'clsx'
 import FoodCard from '../FoodCard'
 import { Food } from '@/db/types'
+import { useQuery } from '@tanstack/react-query'
+import { getFoodList } from './getFoodList'
 
 type Props = {
   handleDeleteItemIds: (ids: number[]) => Promise<void>
-  foods: Food[]
 }
 
-const FoodList = ({ handleDeleteItemIds, foods }: Props) => {
+const FoodList = ({ handleDeleteItemIds }: Props) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
-  const [itemsAvailable, setItemsAvailable] = useState(foods)
+  const [itemsAvailable, setItemsAvailable] = useState([])
+
+  const { data, status, error }: { data: Food[]; status: string; error: any } =
+    useQuery({
+      queryKey: ['foods'],
+      queryFn: getFoodList,
+    })
 
   const toggleSelectItem = (id: number) => {
     const indexOfId = selectedIds.indexOf(id)
@@ -47,7 +53,7 @@ const FoodList = ({ handleDeleteItemIds, foods }: Props) => {
             </Button>
           </>
         )}
-        {itemsAvailable.map(({ id, name, calorie_count }) => (
+        {data?.map(({ id, name, calorie_count }) => (
           <FoodCard
             key={id}
             onClick={() => toggleSelectItem(id)}
