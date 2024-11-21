@@ -1,10 +1,27 @@
 import { db } from '@/db/database'
 import { Food } from '@/db/types'
 
-export async function getFoods(): Promise<Food[]> {
-  const query = db.selectFrom('foods')
+type GetFoodsParams = {
+  pageSize?: number
+  cursor?: number
+}
+export async function getFoods({
+  pageSize,
+  cursor,
+}: GetFoodsParams): Promise<Food[]> {
+  let query = db.selectFrom('foods')
+  query = query.orderBy('updated_at desc')
+
+  if (pageSize) {
+    query = query.limit(pageSize)
+  }
+
+  if (cursor) {
+    query = query.offset(cursor)
+  }
 
   const result = await query.selectAll().execute()
+
   return result
 }
 
