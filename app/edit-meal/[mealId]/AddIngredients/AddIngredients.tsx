@@ -49,7 +49,7 @@ const AddIngredients = ({ foods, mealId }: Props) => {
           <div>
             {ingredients.map((ingredient) => {
               return (
-                <div>
+                <div key={ingredient.id}>
                   {ingredient.food[0].name}: {ingredient.label_qty}{' '}
                   {ingredient.label}
                 </div>
