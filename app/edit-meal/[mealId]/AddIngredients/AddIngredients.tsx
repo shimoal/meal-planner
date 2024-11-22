@@ -1,24 +1,31 @@
 'use client'
 
-import { Food, Ingredient, NewIngredient } from '@/db/types'
+import { Food, NewIngredient } from '@/db/types'
 import { useState } from 'react'
 import AddIngredient from './AddIngredient'
 import Button from '@/components/Button'
-import { useQuery } from '@tanstack/react-query'
-import { getIngredients } from '@/app/(fetch)/ingredientsFetch'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { addIngredients, getIngredients } from '@/app/(fetch)/ingredientsFetch'
 
 type Props = {
   foods: Food[]
   mealId: number
-  handleSaveIngredients: (ingredients: NewIngredient[]) => Promise<Ingredient[]>
 }
 
-const AddIngredients = ({ foods, mealId, handleSaveIngredients }: Props) => {
+const AddIngredients = ({ foods, mealId }: Props) => {
   const [ingredientsToAdd, setIngredientsToAdd] = useState<NewIngredient[]>([])
 
+  const queryClient = useQueryClient()
   const { data: ingredients, isFetching } = useQuery({
     queryKey: ['ingredients'],
     queryFn: async () => await getIngredients(mealId),
+  })
+  const mutation = useMutation({
+    mutationFn: addIngredients,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ingredients'] })
+      setIngredientsToAdd([])
+    },
   })
 
   const handleAddingIngredient = (ingredient: NewIngredient) => {
@@ -27,6 +34,10 @@ const AddIngredients = ({ foods, mealId, handleSaveIngredients }: Props) => {
 
   const getFoodNameFromId = (foodId: number) => {
     return foods.find((food) => food.id === foodId)?.name || ''
+  }
+
+  const handleSaveIngredients = () => {
+    mutation.mutate(ingredientsToAdd)
   }
 
   return (
@@ -59,9 +70,7 @@ const AddIngredients = ({ foods, mealId, handleSaveIngredients }: Props) => {
         mealId={mealId}
         handleAddingIngredient={handleAddingIngredient}
       />
-      <Button onClick={() => handleSaveIngredients(ingredientsToAdd)}>
-        Save Ingredients to Meal
-      </Button>
+      <Button onClick={handleSaveIngredients}>Save Ingredients to Meal</Button>
     </div>
   )
 }
