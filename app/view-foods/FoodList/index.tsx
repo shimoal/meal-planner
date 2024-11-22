@@ -69,7 +69,7 @@ const FoodList = () => {
             {page.data.map(({ id, name, calorie_count }) => (
               <FoodCard
                 key={id}
-                onClick={() => toggleSelectItem(id)}
+                onClick={() => !isFetching && toggleSelectItem(id)}
                 selected={selectedId === id}
                 name={name}
                 calories={calorie_count}
