@@ -25,8 +25,21 @@ export async function getPaginatedFoodList({
   return response.json()
 }
 
-export async function deleteFoodItem(foodId: number): Promise<string> {
+export async function deleteFood(foodId: number): Promise<string> {
   const response = await fetch(`/api/foods?id=${foodId}`, { method: 'DELETE' })
+
+  if (!response.ok) {
+    throw new Error('Something went wrong')
+  }
+
+  return response.json()
+}
+
+export async function addFood(food: Partial<Food>): Promise<void> {
+  const response = await fetch(`/api/foods`, {
+    method: 'POST',
+    body: JSON.stringify(food),
+  })
 
   if (!response.ok) {
     throw new Error('Something went wrong')

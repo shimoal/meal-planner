@@ -10,7 +10,7 @@ import {
   useQueryClient,
   useInfiniteQuery,
 } from '@tanstack/react-query'
-import { deleteFoodItem, getPaginatedFoodList } from './getFoodList'
+import { deleteFood, getPaginatedFoodList } from '../../(fetch)/foodsFetch'
 
 const FoodList = () => {
   const [selectedId, setSelectedFoodId] = useState<number | null>(null)
@@ -34,7 +34,7 @@ const FoodList = () => {
   }, [fetchNextPage, inView])
 
   const mutation = useMutation({
-    mutationFn: deleteFoodItem,
+    mutationFn: deleteFood,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['foods'] })
     },

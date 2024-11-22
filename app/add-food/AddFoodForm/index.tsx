@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Button from '@/components/Button'
 import Input from '@/components/formElements/Input'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { addFood } from './addFood'
+import { addFood } from '@/app/(fetch)/foodsFetch'
 
 const AddFoodForm = () => {
   const [name, setName] = useState<string>('')
