@@ -4,6 +4,8 @@ import { Food, Ingredient, NewIngredient } from '@/db/types'
 import { useState } from 'react'
 import AddIngredient from './AddIngredient'
 import Button from '@/components/Button'
+import { useQuery } from '@tanstack/react-query'
+import { getIngredients } from '@/app/(fetch)/ingredientsFetch'
 
 type Props = {
   foods: Food[]
@@ -13,6 +15,11 @@ type Props = {
 
 const AddIngredients = ({ foods, mealId, handleSaveIngredients }: Props) => {
   const [ingredientsToAdd, setIngredientsToAdd] = useState<NewIngredient[]>([])
+
+  const { data: ingredients, isFetching } = useQuery({
+    queryKey: ['ingredients'],
+    queryFn: async () => await getIngredients(mealId),
+  })
 
   const handleAddingIngredient = (ingredient: NewIngredient) => {
     setIngredientsToAdd((i) => [...i, ingredient])
@@ -24,6 +31,22 @@ const AddIngredients = ({ foods, mealId, handleSaveIngredients }: Props) => {
 
   return (
     <div>
+      {isFetching && <div>Loading...</div>}
+      {ingredients && (
+        <>
+          <p>Ingredients:</p>
+          <div>
+            {ingredients.map((ingredient) => {
+              return (
+                <div>
+                  {ingredient.food[0].name}: {ingredient.label_qty}{' '}
+                  {ingredient.label}
+                </div>
+              )
+            })}
+          </div>
+        </>
+      )}
       <h2>Ingredients to add:</h2>
       {ingredientsToAdd.map((ingredient) => (
         <div key={ingredient.food_id}>
